@@ -7,6 +7,9 @@ from appcoder.models import Estudiante
 def home(self, name):
     return HttpResponse(f'Hola soy {name}')
 
+def inicio(request):
+    return HttpResponse(f'hola inicio')
+
 def homePage(self):
     lista = [1,2,3,4,5,6,7,8,9]
     data = {'nombre': 'Derick', 'apellido': 'Carcamo', 'lista' : lista}
