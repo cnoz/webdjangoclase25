@@ -22,7 +22,7 @@ def curso1(self):
     documento = planilla.render()
     return HttpResponse(documento)
 #
-
+# la def cursos la importo de appcoder funcion curso, y funcion estudiante.
 def cursos(self,):
     #planilla = loader.get_template('cursos.html')
     curso = Curso(nombre="UX/UI", camada="12345")
