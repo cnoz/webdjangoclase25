@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 
 def inicio(request):
-    return render(request, "inicio.html")
+    return render(request, "home.html")
 
 
 def curso(request):
