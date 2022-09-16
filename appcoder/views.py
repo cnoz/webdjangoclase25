@@ -46,5 +46,5 @@ def buscar_estudiante(request):
         return render(request, "estudiantes.html", {'estudiantes': estudiantes})
     else:
         respuesta = "No enviaste datos"
-    #return render(request, "estudiantes.html") #si no cargo datos se queda en la pag. y dice "No enviaste datos"
+    #return render(request, "estudiantes.html") #si no cargo datos se queda en la pag.
     return HttpResponse(respuesta)
