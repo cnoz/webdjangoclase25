@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from webdjango.view import home, homePage, cursos
-from webdjango.view import estudiante, curso1, inicio, home
+from webdjango.view import estudiante, curso1, inicio
 
 
 urlpatterns = [
