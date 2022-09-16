@@ -28,6 +28,11 @@
             <li>{{ estudiante.email}}</li>
             {% endfor %}
         </ul>
+        
+        {% else %} 
+        <p> No hay datos </p>
+
+
         {% endif %}
     </div>
     {% endblock %}
