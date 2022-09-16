@@ -21,7 +21,6 @@ def estudiantes(request):
         return render(request, "home.html")
     return render(request, "estudiantes.html")
 
-
 def entregable(request):
     return render(request, "entregables.html")
 

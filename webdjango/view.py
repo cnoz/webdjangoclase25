@@ -27,13 +27,11 @@ def cursos(self,):
     #planilla = loader.get_template('cursos.html')
     curso = Curso(nombre="UX/UI", camada="12345")
     curso.save()
-    
     documento = f'Curso: {curso.nombre} camada: {curso.camada}' 
     return HttpResponse(documento)
-
 
 def estudiante(self,):
     estudiante = Estudiante(nombre="cristian", apellido= "Nozralah", email= "cnoz2001@yahoo.com.ar")
     estudiante.save()
-    documento= f' Estudiante: {estudiante.nombre} {estudiante.apellido} {estudiante.email}'
+    documento= f' Estudiante: {estudiante.nombre} {estudiante.apellido}, email: {estudiante.email}'
     return HttpResponse(documento)
