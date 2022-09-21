@@ -48,3 +48,47 @@ def buscar_estudiante(request):
         respuesta = "No enviaste datos"
     #return render(request, "estudiantes.html") #si no cargo datos se queda en la pag.
     return HttpResponse(respuesta)
+
+
+
+def create_estudiantes(request):
+    if request.method == 'POST':
+        estudiante= Estudiante(nombre= request.POST['nombre'], apellido= request.POST['apellido'], email=request.POST['email'])
+        estudiante.save()
+        estudiantes = Estudiante.objects.all() #Trae todo
+        return render(request, "estudiantesCRUD/read_estudiantes.html", {"estudiantes": estudiantes})
+    return render(request,'estudiantesCRUD/create_estudiantes.html')
+
+
+def read_estudiantes(request=None):
+    estudiantes = Estudiante.objects.all() #Trae todo
+    return render(request, "estudiantesCRUD/read_estudiantes.html", {"estudiantes": estudiantes})
+
+
+def update_estudiantes(request, estudiante_id):
+    estudiante = Estudiante.objects.get(id = estudiante_id)
+
+    if request.method == 'POST':
+        formulario = form_estudiantes(request.POST)
+
+        if formulario.is_valid():
+            informacion = formulario.cleaned_data
+            estudiante.nombre = informacion['nombre']
+            estudiante.apellido = informacion['apellido']
+            estudiante.email = informacion['email']
+            estudiante.save()
+            estudiantes = Estudiante.objects.all() #Trae todo
+            return render(request, "estudiantesCRUD/read_estudiantes.html", {"estudiantes": estudiantes})
+    else:
+        formulario = form_estudiantes(initial={'nombre': estudiante.nombre, 'apellido': estudiante.apellido, 'email': estudiante.email})
+    return render(request,"estudiantesCRUD/update_estudiantes.html", {"formulario": formulario})
+
+
+
+def delete_estudiantes(request, estudiante_id):
+    estudiante= Estudiante.objects.get(id = estudiante_id)
+    estudiante.delete()
+
+    estudiantes = Estudiante.objects.all() #Trae todo
+    return render(request, "estudiantesCRUD/read_estudiantes.html", {"estudiantes": estudiantes})
+    
