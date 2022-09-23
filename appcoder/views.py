@@ -1,12 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from appcoder.models import Estudiante
-from appcoder.forms import form_estudiantes
+from appcoder.forms import form_estudiantes, UserRegisterForm
+
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-
+@login_required
 def inicio(request):
     return render(request, "home.html")
+
+
 
 def curso(request):
     return render(request, "curso.html")
@@ -91,4 +98,45 @@ def delete_estudiantes(request, estudiante_id):
 
     estudiantes = Estudiante.objects.all() #Trae todo
     return render(request, "estudiantesCRUD/read_estudiantes.html", {"estudiantes": estudiantes})
-    
+##################################
+# 22/09/2022
+
+def login_request(request):    
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data= request.POST)    
+        if form.is_valid():
+            user = form.cleaned_data.get('username')
+            pwd = form.cleaned_data.get('password')
+
+            user = authenticate(username = user , password = pwd)
+
+            if user is not None:
+                login(request, user )
+                return  render(request, 'home.html')
+            
+            else:
+                return render(request, 'login.html', {'form': form })
+
+        else:
+            return render(request, 'login.html', {'form': form})
+
+    form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+
+def registro(request):
+    if request.method == 'POST':
+        #form = UserCreationForm(request.POST)
+        form2 = UserRegisterForm(request.POST)
+        print(form2)
+        if form2.is_valid():
+            #username = form.cleaned_data["username"]
+            form2.save()
+            #redirect("/appcoder/login/")
+            #return render(request, "inicio.html")
+            return redirect("/appcoder/login/")
+
+    #form = UserCreationForm()
+    form2 = UserRegisterForm()
+    return render(request, "registro.html", {'form1': form2})
+
+        
