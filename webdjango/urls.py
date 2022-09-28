@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from webdjango.view import home, homePage, cursos
 from webdjango.view import estudiante, curso1, inicio
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -28,6 +30,8 @@ urlpatterns = [
     path('cursos/', cursos),
     path('estudiante/',estudiante),
     path('curso1/',curso1),
-    path('appcoder/', include("appcoder.urls")),
+    path('appcoder/', include("appcoder.urls"))
     
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
