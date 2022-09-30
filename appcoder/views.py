@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from appcoder.models import Estudiante
-from appcoder.forms import form_estudiantes, UserRegisterForm, UserEditForm, ChangePasswordForm
+from appcoder.models import Estudiante, Avatar
+from appcoder.forms import form_estudiantes, UserRegisterForm, UserEditForm, ChangePasswordForm, AvatarFormulario
 
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm 
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
@@ -12,7 +12,14 @@ from django.contrib.auth.models import User
 # Create your views here.
 @login_required
 def inicio(request):
-    return render(request, "home.html")
+    #return render(request, "home.html")
+    avatar = Avatar.objects.filter(user = request.user.id)
+    try:
+        avatar = avatar[0].image.url
+    except:
+        avatar = None
+    return render(request, 'home.html', {'avatar': avatar})
+
 
 
 @login_required
@@ -26,14 +33,30 @@ def estudiantes(request):
     if request.method == "POST":
         estudiante = Estudiante(nombre=request.POST['nombre'], apellido=request.POST['apellido'],email=request.POST['email'])
         estudiante.save()
-        return render(request, "home.html")
+        avatar = Avatar.objects.filter(user = request.user.id)
+        try:
+            avatar = avatar[0].image.url
+        except:
+            avatar = None
+        return render(request, 'home.html', {'avatar': avatar})
+                
+        #return render(request, 'home.html', {'avatar': avatar[0].image.url})
+        #return render(request, "home.html")
     return render(request, "estudiantes.html")
 
 def entregable(request):
     return render(request, "entregables.html")
 
 def home(request):
-    return render(request, "home.html")
+    #return render(request, "home.html")
+    avatar = Avatar.objects.filter(user = request.user.id)
+    try:
+        avatar = avatar[0].image.url
+    except:
+        avatar = None
+    return render(request, 'home.html', {'avatar': avatar})
+    #return render(request, 'home.html', {'avatar': avatar[0].image.url})
+
 
 def api_estudiantes(request):
     if request.method == "POST":
@@ -113,7 +136,14 @@ def login_request(request):
 
             if user is not None:
                 login(request, user )
-                return  render(request, 'home.html')
+                avatar = Avatar.objects.filter(user = request.user.id)
+                try:
+                    avatar = avatar[0].image.url
+                except:
+                      avatar = None
+                return render(request, 'home.html', {'avatar': avatar})
+                #return render(request, 'home.html', {'avatar': avatar[0].image.url})
+                #return  render(request, 'home.html')
             
             else:
                 return render(request, 'login.html', {'form': form })
@@ -173,9 +203,21 @@ def editarperfil(request):
             user_basic_info.first_name = form.cleaned_data.get('first_name')
             user_basic_info.last_name = form.cleaned_data.get('last_name')
             user_basic_info.save()
-            return render (request, 'home.html')
+            avatar = Avatar.objects.filter(user = request.user.id)
+            try:
+                 avatar = avatar[0].image.url
+            except:
+                 avatar = None
+            return render(request, 'home.html', {'avatar': avatar})
+
+            #return render(request, 'home.html', {'avatar': avatar[0].image.url})
+
+            #return render (request, 'home.html')
         else:
-            return render (request, 'home.html', {'form':form})
+            avatar = Avatar.objects.filter(user = request.user.id)
+            return render(request, 'home.html', {'avatar': avatar[0].image.url})
+
+            #return render (request, 'home.html', {'form':form})
     else:
         form = UserEditForm(initial= {'email': usuario.email, 'username': usuario.username, 'first_name': usuario.first_name,'last_name': usuario.last_name})
     return render(request, 'editarperfil.html', {'form':form, 'usuario': usuario})
@@ -189,7 +231,15 @@ def changepass(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            return render(request, 'home.html')
+            #return render(request, 'home.html')
+            avatar = Avatar.objects.filter(user = request.user.id)
+            try:
+                avatar = avatar[0].image.url
+            except:
+                avatar = None
+            return render(request, 'home.html', {'avatar': avatar})
+           
+
     else:
         #form = PasswordChangeForm(request.user)
         form = ChangePasswordForm(user = request.user)
@@ -197,8 +247,30 @@ def changepass(request):
 
 @login_required
 def perfilview(request):
-    usuario = request.user
-    #user_basic_info = User.objects.get(id = usuario.id)
-    #print(usuario)
-    #return render(request, 'perfil.html', {'form':user_basic_info})
-    return render(request, 'perfil.html')
+    avatar = Avatar.objects.filter(user = request.user.id)
+    try:
+        avatar = avatar[0].image.url
+    except:
+        avatar = None
+    #return render(request, 'home.html', )
+    return render(request, 'perfil.html',{'avatar': avatar})
+
+########################## AVATAR ###################################
+@login_required
+def AgregarAvatar(request):
+    if request.method == 'POST':
+        form =  AvatarFormulario(request.POST, request.FILES)
+        if form.is_valid():
+            user = User.objects.get(username = request.user)
+            avatar = Avatar (user = user, image = form.cleaned_data['avatar'], id = request.user.id)
+            avatar.save()
+            avatar = Avatar.objects.filter(user = request.user.id)
+            return render(request, 'home.html', {'avatar': avatar[0].image.url})
+    else: 
+        try:
+            avatar = avatar.objects.filter(user = request.user.id)
+            form = AvatarFormulario()
+        except:
+            form = AvatarFormulario()
+    return render(request, 'AgregarAvatar.html', {'form': form})
+
